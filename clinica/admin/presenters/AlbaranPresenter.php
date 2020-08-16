@@ -176,3 +176,5 @@ class AlbaranPresenter extends BaseObject
         return $exporter->send('albaranes.xls');
     } 
 }
+
+// Fin del documento
