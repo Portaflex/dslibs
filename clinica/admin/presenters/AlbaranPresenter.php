@@ -21,6 +21,7 @@ use yii\base\BaseObject;
 use dslibs\clinica\admin\models\AlbaranSearch;
 use dslibs\helpers\Camp;
 use dslibs\clinica\helpers\OpcionClinica;
+use yii2tech\spreadsheet\Spreadsheet;
 
 class AlbaranPresenter extends BaseObject
 {
@@ -149,4 +150,29 @@ class AlbaranPresenter extends BaseObject
         return $out;
     }
     
+    public function excelExport ()
+    {
+        $searchModel = new AlbaranSearch();
+        $o  = $searchModel->search();
+        $dataProvider = $o['dataProvider'];
+        
+        $exporter = new Spreadsheet([
+            'dataProvider' => $dataProvider,
+            'title' => 'Albaranes de cita',
+            'columns' => [
+                ['attribute' => 'Fecha', 'content' => function ($model) {
+                    return Yii::$app->formatter->asDate($model['a_fecha_acto']);
+                }],
+                ['attribute' => 'financiador'],
+                ['attribute' => 'paciente'],
+                ['attribute' => 'financiador'],
+                ['attribute' => 'sanitario'],
+                ['attribute' => 'estado'],
+                ['attribute' => 'pago'],
+                ['attribute' => 'a_precio', 'label' => 'Precio']
+            ]
+        ]);
+        
+        return $exporter->send('albaranes.xls');
+    } 
 }

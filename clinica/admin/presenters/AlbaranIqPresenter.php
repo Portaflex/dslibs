@@ -24,6 +24,7 @@ use dslibs\helpers\Lista;
 use dslibs\helpers\Camp;
 use dslibs\clinica\admin\models\IqRolModel;
 use dslibs\clinica\admin\models\AlbaranSearch;
+use yii2tech\spreadsheet\Spreadsheet;
 
 class AlbaranIqPresenter extends BaseObject
 {
@@ -219,6 +220,34 @@ class AlbaranIqPresenter extends BaseObject
     	]);
     	return $out;
     }
+    
+    public function excelExport ()
+    {
+        $searchModel = new AlbaranSearch();
+        $o  = $searchModel->searchIq();
+        $dataProvider = $o['dataProvider'];
+        
+        $exporter = new Spreadsheet([
+            'dataProvider' => $dataProvider,
+            'title' => 'Albaranes de cita',
+            'columns' => [
+                ['attribute' => 'Fecha', 'content' => function ($model) {
+                    return Yii::$app->formatter->asDate($model['a_fecha_acto']);
+                }],
+                ['attribute' => 'financiador'],
+                ['attribute' => 'paciente'],
+                ['attribute' => 'financiador'],
+                ['attribute' => 'sanitario', 'content' => function ($model) {
+                    return $model['rol'].': '.$model['sanitario'];
+                }],
+                ['attribute' => 'estado'],
+                ['attribute' => 'pago'],
+                ['attribute' => 'a_precio', 'label' => 'Precio']
+                ]
+                ]);
+        
+        return $exporter->send('albaranes_iq.xls');
+    } 
 }
 
 // Final del documento.
