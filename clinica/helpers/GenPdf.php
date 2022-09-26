@@ -7,7 +7,7 @@ use Yii;
 
 class GenPdf extends Mpdf
 {
-	private function doctores ()
+     private function doctores ()
 	{
 	    $doctores = Yii::$app->params['doctores'];
 	    $out = '<b>Clínica de C.O.T.</b><br>';
